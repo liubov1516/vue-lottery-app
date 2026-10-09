@@ -18,7 +18,7 @@ function onFilterByName(term: string): void {
   searchTerm.value = term.toLowerCase();
 }
 
-//сортування
+// сортування
 type SortKey = 'name' | 'dob' | null;
 const sortKey = ref<SortKey>(null);
 const sortDir = ref<'asc' | 'desc'>('asc');
@@ -49,7 +49,7 @@ function isWinner(id: string): boolean {
   return winners.value.some((w) => w.id === id);
 }
 
-//редагування учасника
+// редагування учасника
 const editTarget = ref<Participant | null>(null);
 const editForm = reactive<ParticipantFormData>({ name: '', dob: '', email: '', phone: '' });
 const editErrors = ref<FieldErrors>({});
@@ -73,7 +73,7 @@ function submitEdit(): void {
   if (!editTarget.value) return;
   const fieldErrors = validateParticipant(editForm);
 
-  // Власний email учасника при редагуванні не вважається дублікатом
+  // Власний email учасника при редагуванні не вважається дублікатом.
   if (isEmailTaken(editForm.email, editTarget.value.id)) {
     fieldErrors.email = 'Учасник з такою поштою вже зареєстрований';
   }
@@ -85,7 +85,7 @@ function submitEdit(): void {
   closeEdit();
 }
 
-//  видалення учасника
+// видалення учасника
 const deleteTarget = ref<Participant | null>(null);
 
 function openDelete(participant: Participant): void {
@@ -111,19 +111,29 @@ function confirmDelete(): void {
       <thead>
         <tr>
           <th>#</th>
-          <th
-            class="sortable"
-            @click="toggleSort('name')"
-          >
-            Name
-            <span v-if="sortKey === 'name'">{{ sortDir === 'asc' ? '▲' : '▼' }}</span>
+          <th>
+            <span class="th-label">Name</span>
+            <button
+              type="button"
+              class="sort-icon-btn"
+              :class="{ active: sortKey === 'name' }"
+              title="Сортувати за іменем (A-Z / Z-A)"
+              @click="toggleSort('name')"
+            >
+              <span aria-hidden="true">{{ sortKey === 'name' && sortDir === 'desc' ? '↓A' : '↑A' }}</span>
+            </button>
           </th>
-          <th
-            class="sortable"
-            @click="toggleSort('dob')"
-          >
-            Date of Birth
-            <span v-if="sortKey === 'dob'">{{ sortDir === 'asc' ? '▲' : '▼' }}</span>
+          <th>
+            <span class="th-label">Date of Birth</span>
+            <button
+              type="button"
+              class="sort-icon-btn"
+              :class="{ active: sortKey === 'dob' }"
+              title="Сортувати за датою народження"
+              @click="toggleSort('dob')"
+            >
+              <span aria-hidden="true">{{ sortKey === 'dob' && sortDir === 'desc' ? '↓' : '↑' }}</span>
+            </button>
           </th>
           <th>Email</th>
           <th>Phone number</th>
@@ -174,7 +184,6 @@ function confirmDelete(): void {
       </tbody>
     </table>
 
-    // Модальне вікно редагування
     <ModalWindow
       v-if="editTarget"
       title="Редагувати дані"
@@ -221,7 +230,6 @@ function confirmDelete(): void {
       </template>
     </ModalWindow>
 
-    // Модальне вікно підтвердження видалення
     <ModalWindow
       v-if="deleteTarget"
       title="Підтвердження"
@@ -248,9 +256,35 @@ function confirmDelete(): void {
 </template>
 
 <style scoped>
-.sortable {
+.th-label {
+  margin-right: 0.35rem;
+}
+
+.sort-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
   cursor: pointer;
-  user-select: none;
+  padding: 0;
+}
+
+.sort-icon-btn:hover {
+  background: #f3f4f6;
+}
+
+.sort-icon-btn.active {
+  background: #2d9cdb;
+  border-color: #2d9cdb;
+  color: #fff;
 }
 
 .winner-mark {

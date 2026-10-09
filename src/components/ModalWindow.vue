@@ -10,7 +10,7 @@ function close(): void {
   emit('close');
 }
 
-// Автофокус, щоб @keyup.esc на вікні спрацьовував одразу після відкриття
+// Автофокус, щоб @keyup.esc на вікні спрацьовував одразу після відкриття.
 onMounted(() => {
   windowRef.value?.focus();
 });
