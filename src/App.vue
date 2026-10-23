@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import WinnersPanel from './components/WinnersPanel.vue';
-import RegisterForm from './components/RegisterForm.vue';
-import ParticipantsTable from './components/ParticipantsTable.vue';
+import { computed, defineAsyncComponent } from 'vue'
+import { useRoute } from 'vue-router'
+
+// Layouts теж завантажуються асинхронно
+const DefaultLayout = defineAsyncComponent(() => import('@/layouts/DefaultLayout.vue'))
+const AuthLayout = defineAsyncComponent(() => import('@/layouts/AuthLayout.vue'))
+
+const route = useRoute()
+
+// Layout обирається за полем meta.layout поточного маршруту
+const layout = computed(() => (route.meta.layout === 'auth' ? AuthLayout : DefaultLayout))
 </script>
 
 <template>
-  <main class="app-shell">
-    <WinnersPanel />
-    <RegisterForm />
-    <ParticipantsTable />
-  </main>
+  <component :is="layout">
+    <RouterView />
+  </component>
 </template>
